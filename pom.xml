@@ -54,7 +54,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>xyz.ptaiton.App</mainClass>
+                <mainClass>xyz.delafaire.App</mainClass>
               </manifest>
             </archive>
           </configuration>
