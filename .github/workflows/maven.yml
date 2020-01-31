@@ -65,7 +65,7 @@ jobs:
         docker build -t java-hello-world .
     - name: Publish
       run: |
-        docker tag $GITHUB_SHA gcr.io/$GKE_PROJECT/$IMAGE
+        docker tag $IMAGE:$GITHUB_SHA gcr.io/$GKE_PROJECT/$IMAGE
         docker push gcr.io/${GKE_PROJECT}/${IMAGE:$GITHUB_SHA}
     - name: Set up Kustomize
       run: |
