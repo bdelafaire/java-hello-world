@@ -54,7 +54,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>xyz.bdelafaire.App</mainClass>
+                <mainClass>xyz.bdelafaire.app.App</mainClass>
               </manifest>
             </archive>
           </configuration>
