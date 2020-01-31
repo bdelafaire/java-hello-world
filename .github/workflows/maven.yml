@@ -64,6 +64,8 @@ jobs:
         mkdir -p java-hello-world/target
         mv artifact/java-hello-world-1.0-SNAPSHOT.jar java-hello-world/target
         docker build -t java-hello-world . --tag gcr.io/$GKE_PROJECT/$IMAGE
+    - name: install python-openssl
+      run: sudo apt-get install -y python-openssl -o=Dpkg::Use-Pty=0
     - name: Setup gcloud environment
       uses: GoogleCloudPlatform/github-actions@0.1.1
       with:
