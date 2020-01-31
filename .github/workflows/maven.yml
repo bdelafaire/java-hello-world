@@ -1,0 +1,80 @@
+name: Build sample Java Maven project
+ 
+on: [push, pull_request]
+ 
+env:
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: java-hello-world-cluster
+  GKE_ZONE: us-west1-a
+  IMAGE: java-hello-world
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11 ]
+    name: Java ${{ matrix.java }} compile
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - run: mvn -f pom.xml clean compile
+
+  build:
+    runs-on: ubuntu-latest
+    needs: compile
+    name: Build Maven project
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Build and test project
+      run: mvn -f pom.xml clean verify
+    - name: Upload Maven build artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: artifact
+        path: target/java-hello-world-1.0-SNAPSHOT.jar
+
+  deploy: 
+    runs-on: ubuntu-latest  
+    needs: build 
+    name: Build Docker container and deploy to Kubernetes
+    steps:
+    - uses: actions/checkout@v1
+    - name: Download Maven build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: artifact
+    - name: Build Docker container
+      run: |
+        mkdir -p java-hello-world/target
+        mv artifact/java-hello-world-1.0-SNAPSHOT.jar java-hello-world/target
+        ls
+        docker build -t java-hello-world .
+    - name: Publish
+      run: |
+        docker push gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
+    - name: Set up Kustomize
+      run: |
+        curl -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+    - name: Deploy
+      run: |
+        gcloud container clusters get-credentials $GKE_CLUSTER \
+          --zone $GKE_ZONE --project $GKE_PROJECT
+        ./kustomize edit set image gcr.io/GKE_PROJECT/IMAGE:TAG=gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
+        ./kustomize build . | kubectl apply -f -
+        kubectl rollout status deployment/gke-test
+        kubectl get services -o wide
