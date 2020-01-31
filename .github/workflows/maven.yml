@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: java-hello-world-cluster
-  GKE_ZONE: us-west1-a
+  GKE_ZONE: us-central1-f
   IMAGE: java-hello-world
 
 jobs:
