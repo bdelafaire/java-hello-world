@@ -1,11 +1,10 @@
 name: Build sample Java Maven project
-
+ 
 on: [push, pull_request]
  
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: java-hello-world-cluster
-  GCLOUD_EMAIL: ${{ secrets.GCLOUD_EMAIL }}
   GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
   GKE_ZONE: us-central1-f
   IMAGE: java-hello-world
@@ -69,6 +68,7 @@ jobs:
       env:
         GCLOUD_AUTH: $GCLOUD_AUTH
     - name: Configure Docker to use Google Cloud Platform
+      uses: actions/gcloud/cli@master
       with:
         args: "auth configure-docker --quiet"
     - name: Publish
