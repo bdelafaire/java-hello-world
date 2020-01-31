@@ -5,8 +5,6 @@ on: [push, pull_request]
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: java-hello-world-cluster
-  GCLOUD_EMAIL: ${{ secrets.GCLOUD_EMAIL }}
-  GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
   GKE_ZONE: us-central1-f
   IMAGE: java-hello-world
 
@@ -69,8 +67,8 @@ jobs:
     - name: Setup gcloud environment
       uses: GoogleCloudPlatform/github-actions@0.1.1
       with:
-        service_account_email: $GCLOUD_EMAIL
-        service_account_key: $GCLOUD_AUTH  
+        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
     - run: |
         gcloud auth configure-docker
     - name: Publish
