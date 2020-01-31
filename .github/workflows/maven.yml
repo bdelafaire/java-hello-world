@@ -64,8 +64,8 @@ jobs:
         mkdir -p java-hello-world/target
         mv artifact/java-hello-world-1.0-SNAPSHOT.jar java-hello-world/target
         docker build -t java-hello-world . --tag gcr.io/$GKE_PROJECT/$IMAGE
-    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-    - name: Authenticate into Google Cloud Platform
+      - name: Authenticate into Google Cloud Platform
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
         version: '278.0.0'
         service_account_email: $GCLOUD_EMAIL
