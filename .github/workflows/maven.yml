@@ -5,6 +5,7 @@ on: [push, pull_request]
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: java-hello-world-cluster
+  GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
   GKE_ZONE: us-central1-f
   IMAGE: java-hello-world
 
@@ -61,11 +62,17 @@ jobs:
       run: |
         mkdir -p java-hello-world/target
         mv artifact/java-hello-world-1.0-SNAPSHOT.jar java-hello-world/target
-        ls
-        docker build -t java-hello-world .
+        docker build -t java-hello-world . --tag gcr.io/$GKE_PROJECT/$IMAGE
+    - name: Authenticate into Google Cloud Platform
+      uses: actions/gcloud/auth@master
+      env:
+        GCLOUD_AUTH: $GCLOUD_AUTH
+    - name: Configure Docker to use Google Cloud Platform
+      uses: actions/gcloud/cli@master
+      with:
+        args: "auth configure-docker --quiet"
     - name: Publish
       run: |
-        docker tag $IMAGE gcr.io/$GKE_PROJECT/$IMAGE:test
         docker push gcr.io/$GKE_PROJECT/$IMAGE:test
     - name: Set up Kustomize
       run: |
