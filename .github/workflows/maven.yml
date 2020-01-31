@@ -80,7 +80,7 @@ jobs:
     - name: Deploy
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
-        ./kustomize edit set image gcr.io/GKE_PROJECT/IMAGE:TAG=gcr.io/$GKE_PROJECT/$IMAGE
+        ./kustomize edit set image gcr.io/GKE_PROJECT/IMAGE=gcr.io/$GKE_PROJECT/$IMAGE
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/java-hello-world
         kubectl get services -o wide
