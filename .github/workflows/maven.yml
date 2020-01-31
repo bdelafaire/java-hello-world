@@ -1,5 +1,5 @@
 name: Build sample Java Maven project
- 
+
 on: [push, pull_request]
  
 env:
