@@ -1,4 +1,4 @@
-name: Build sample Java Maven project
+name: Build Maven projet and deploy on Kube
  
 on: [push, pull_request]
  
