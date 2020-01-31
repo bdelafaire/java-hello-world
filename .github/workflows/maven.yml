@@ -72,7 +72,7 @@ jobs:
         gcloud auth configure-docker
     - name: Publish
       run: |
-        docker push gcr.io/$GKE_PROJECT/$IMAGE:test
+        docker push gcr.io/$GKE_PROJECT/$IMAGE
     - name: Set up Kustomize
       run: |
         curl -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
