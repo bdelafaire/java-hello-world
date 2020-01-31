@@ -5,6 +5,7 @@ on: [push, pull_request]
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: java-hello-world-cluster
+  GCLOUD_EMAIL: ${{ secrets.GCLOUD_EMAIL }}
   GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
   GKE_ZONE: us-central1-f
   IMAGE: java-hello-world
@@ -54,6 +55,11 @@ jobs:
     name: Build Docker container and deploy to Kubernetes
     steps:
     - uses: actions/checkout@v1
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '278.0.0'
+        service_account_email: $GCLOUD_EMAIL
+        service_account_key: $GCLOUD_AUTH
     - name: Download Maven build artifact
       uses: actions/download-artifact@v1
       with:
@@ -68,7 +74,6 @@ jobs:
       env:
         GCLOUD_AUTH: $GCLOUD_AUTH
     - name: Configure Docker to use Google Cloud Platform
-      uses: actions/gcloud/cli@master
       with:
         args: "auth configure-docker --quiet"
     - name: Publish
