@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: java-hello-world
-        image: gcr.io/GKE_PROJECT/IMAGE:TAG 
+        image: gcr.io/GKE_PROJECT/IMAGE
         ports:
         - containerPort: 5000
         resources:
